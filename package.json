@@ -11,10 +11,13 @@
     "url": "git+https://github.com/melaniietong/TinyApp.git"
   },
   "keywords": [],
-  "author": "Melanie Tong <>",
+  "author": "Melanie Tong",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/melaniietong/TinyApp/issues"
   },
-  "homepage": "https://github.com/melaniietong/TinyApp#readme"
+  "homepage": "https://github.com/melaniietong/TinyApp#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
