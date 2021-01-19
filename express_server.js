@@ -45,9 +45,15 @@ app.get("/urls/:shortURL", (req, res) => {
 
 // Saves URL submission and autogen short URL to urlDatabase.
 app.post("/urls", (req, res) => {
-  const shortURL = generateRandomString()
+  const shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect(`/urls/${shortURL}`); // Redirects to new shortURL page.
+});
+
+// Deletes a short URL.
+app.post("/urls/:shortURL/delete", (req, res) => {
+  delete urlDatabase[req.params.shortURL];
+  res.redirect(`/urls`); // Redirects to my URL page.
 });
 
 // Redirects short URL to long URL.
