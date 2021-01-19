@@ -11,10 +11,14 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-// Passing urlDatabase object to /url EJS template.
+// Passing urlDatabase to /url EJS template.
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
+});
+
+app.get("/urls/new", (req, res) => {
+  res.render("urls_new");
 });
 
 // Passing URL info for specified short URL to EJS template.
