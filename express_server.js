@@ -10,10 +10,6 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-app.get("/", (req, res) => {
-  res.send("Hello!");
-});
-
 // Passing urlDatabase object to /url EJS template.
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
