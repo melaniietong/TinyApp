@@ -5,6 +5,7 @@ const PORT = 8080;
 
 // Body Parser -- convert Buffer to string. Then add data to req() object.
 const bodyParser = require("body-parser");
+const { render } = require("ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 
 // EJS -- site templates.
@@ -32,9 +33,11 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+// Saves URL submission and autogen short URL to urlDatabase.
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console.
-  res.send("Ok");         // Respond with 'Ok' (we will replace this).
+  const shortURL = generateRandomString()
+  urlDatabase[shortURL] = req.body.longURL;
+  res.redirect(`/urls/${shortURL}`); // Redirects to new shortURL page.
 });
 
 // Generates a random alphanumeric 6 character string.
