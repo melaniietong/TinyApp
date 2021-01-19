@@ -8,6 +8,16 @@ const bodyParser = require("body-parser");
 const { render } = require("ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 
+// Generates a random alphanumeric 6 character string.
+function generateRandomString() {
+  let output = '';
+  let alphanum = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i <= 6; i++) {
+    output += alphanum[Math.floor(Math.random() * alphanum.length)]
+  }
+  return output;
+}
+
 // EJS -- site templates.
 app.set("view engine", "ejs");
 
@@ -40,15 +50,11 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`); // Redirects to new shortURL page.
 });
 
-// Generates a random alphanumeric 6 character string.
-function generateRandomString() {
-  let output = '';
-  let alphanum = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  for (let i = 0; i <= 6; i++) {
-    output += alphanum[Math.floor(Math.random() * alphanum.length)]
-  }
-  return output;
-}
+// Redirects short URL to long URL.
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
