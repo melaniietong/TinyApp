@@ -3,33 +3,45 @@ const express = require("express");
 const app = express();
 const PORT = 8080;
 
+/* -----------------------------------------------------------------
+    OTHER DEPENDENCIES
+----------------------------------------------------------------- */
+
 // Body Parser -- convert Buffer to string. Then add data to req() object.
 const bodyParser = require("body-parser");
-const { render } = require("ejs");
 app.use(bodyParser.urlencoded({extended: true}));
+
+// EJS -- site templates.
+const { render } = require("ejs");
+app.set("view engine", "ejs");
 
 // Cookie Parser -- reads cookies.
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
+/* -----------------------------------------------------------------
+    GLOBALS
+----------------------------------------------------------------- */
+
 // Generates a random alphanumeric 6 character string.
 const generateRandomString = () => {
-  let output = '';
+  let newString = '';
   let alphanum = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   for (let i = 0; i <= 6; i++) {
-    output += alphanum[Math.floor(Math.random() * alphanum.length)];
+    newString += alphanum[Math.floor(Math.random() * alphanum.length)];
   }
-  return output;
+  return newString;
 };
 
-// EJS -- site templates.
-app.set("view engine", "ejs");
-
-// Object stores all saved URLs with their short version.
+// Stores shorten URLs with their matching long URL.
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
+
+/* -----------------------------------------------------------------
+    CRUD ROUTING
+----------------------------------------------------------------- */
 
 // Passing urlDatabase to /url EJS template.
 app.get("/urls", (req, res) => {
