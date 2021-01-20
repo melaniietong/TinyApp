@@ -50,10 +50,10 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`); // Redirects to new shortURL page.
 });
 
-// Deletes a short URL.
+// Deletes a URL.
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
-  res.redirect(`/urls`); // Redirects to my URL page.
+  res.redirect("/urls");
 });
 
 // Redirects short URL to long URL.
