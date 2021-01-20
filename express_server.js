@@ -23,6 +23,26 @@ app.use(cookieParser());
     GLOBALS
 ----------------------------------------------------------------- */
 
+// Stores shorten URLs with their matching long URL.
+const urlDatabase = {
+  "b2xVn2": "http://www.lighthouselabs.ca",
+  "9sm5xK": "http://www.google.com"
+};
+
+// Holds user's emails and passwords.
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+}
+
 // Generates a random alphanumeric 6 character string.
 const generateRandomString = () => {
   let newString = '';
@@ -33,10 +53,12 @@ const generateRandomString = () => {
   return newString;
 };
 
-// Stores shorten URLs with their matching long URL.
-const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+// Generates a random user ID.
+const generateRandomUserID = () => {
+  let newUser = 'user_';
+  let randomNum = generateRandomString();
+
+  return newUser += randomNum;
 };
 
 /* -----------------------------------------------------------------
@@ -45,18 +67,22 @@ const urlDatabase = {
 
 // Passing urlDatabase to /url EJS template.
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  const templateVars = { urls: urlDatabase, user: users };
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = { username: req.cookies["username"] };
+  const templateVars = { user: users };
   res.render("urls_new", templateVars);
 });
 
 // Passing URL info for specified short URL to EJS template.
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies["username"] };
+  const templateVars = {
+    shortURL: req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL],
+    user: users };
+
   res.render("urls_show", templateVars);
 });
 
@@ -90,9 +116,30 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+// Registration page.
+app.get("/register", (req, res) => {
+  const templateVars = { user: users };
+  res.render("urls_registration", templateVars);
+});
+
 // User login. Saves username to cookie.
 app.post("/login", (req, res) => {
   res.cookie("username", req.body.username);
+  res.redirect("/urls");
+});
+
+// Registers a new account.
+app.post("/register", (req, res) => {
+  const newUserID = generateRandomUserID();
+
+  // Create a new user in users database.
+  users[newUserID] = {
+    id: "newUserID", 
+    email: req.body.email, 
+    password: req.body.password
+  }
+
+  res.cookie("user_id", newUserID);
   res.redirect("/urls");
 });
 
