@@ -8,6 +8,10 @@ const bodyParser = require("body-parser");
 const { render } = require("ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 
+// Cookie Parser -- reads cookies.
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
 // Generates a random alphanumeric 6 character string.
 function generateRandomString() {
   let output = '';
@@ -27,23 +31,20 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-const templateVars = { 
-  urls: urlDatabase,
-  username: req.cookies["username"],
-};
-
 // Passing urlDatabase to /url EJS template.
 app.get("/urls", (req, res) => {
+  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
+  const templateVars = { username: req.cookies["username"] };
   res.render("urls_new", templateVars);
 });
 
 // Passing URL info for specified short URL to EJS template.
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies["username"] };
   res.render("urls_show", templateVars);
 });
 
@@ -56,7 +57,7 @@ app.post("/urls/:shortURL", (req, res) => {
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
-  res.redirect(`/urls/${shortURL}`, templateVars); // Redirects to new shortURL page.
+  res.redirect(`/urls/${shortURL}`); // Redirects to new shortURL page.
 });
 
 // Deletes a URL.
@@ -77,7 +78,7 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-// Redirects to shortURL page.
+// User login. Saves username to cookie.
 app.post("/login", (req, res) => {
   res.cookie("username", req.body.username);
   res.redirect("/urls"); 

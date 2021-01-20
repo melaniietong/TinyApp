@@ -23,5 +23,13 @@
         </div>
       </form>
     </div>
+
+    <div class="navbar-brand">
+      <% if (username) { %>
+        <p>Hello <strong><%= username %>.</strong></p>
+      <% } else { %>
+        <p>Please login.</p>
+      <% } %>
+    </div>
   </nav>
 </header>
