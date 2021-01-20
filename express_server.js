@@ -1,7 +1,7 @@
 const express = require("express");
 
 const app = express();
-const PORT = 8080; 
+const PORT = 8080;
 
 // Body Parser -- convert Buffer to string. Then add data to req() object.
 const bodyParser = require("body-parser");
@@ -13,14 +13,14 @@ const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
 // Generates a random alphanumeric 6 character string.
-function generateRandomString() {
+const generateRandomString = () => {
   let output = '';
   let alphanum = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   for (let i = 0; i <= 6; i++) {
-    output += alphanum[Math.floor(Math.random() * alphanum.length)]
+    output += alphanum[Math.floor(Math.random() * alphanum.length)];
   }
   return output;
-}
+};
 
 // EJS -- site templates.
 app.set("view engine", "ejs");
@@ -50,7 +50,7 @@ app.get("/urls/:shortURL", (req, res) => {
 
 // Redirects to shortURL page.
 app.post("/urls/:shortURL", (req, res) => {
-  res.redirect(`/urls/${req.params.shortURL}`); 
+  res.redirect(`/urls/${req.params.shortURL}`);
 });
 
 // Saves URL submission and autogen short URL to urlDatabase.
@@ -81,13 +81,13 @@ app.get("/u/:shortURL", (req, res) => {
 // User login. Saves username to cookie.
 app.post("/login", (req, res) => {
   res.cookie("username", req.body.username);
-  res.redirect("/urls"); 
+  res.redirect("/urls");
 });
 
 // Logs out the user by clearing the cookie.
 app.post("/logout", (req, res) => {
   res.clearCookie("username");
-  res.redirect("/urls"); 
+  res.redirect("/urls");
 });
 
 app.listen(PORT, () => {
