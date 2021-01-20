@@ -27,9 +27,13 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const templateVars = { 
+  urls: urlDatabase,
+  username: req.cookies["username"],
+};
+
 // Passing urlDatabase to /url EJS template.
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
@@ -71,6 +75,12 @@ app.post("/update/:id", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
+});
+
+// Redirects to shortURL page.
+app.post("/login", (req, res) => {
+  res.cookie("username", req.body.username);
+  res.redirect("/urls"); 
 });
 
 app.listen(PORT, () => {
