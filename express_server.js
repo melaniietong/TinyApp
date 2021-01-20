@@ -43,6 +43,11 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+// Redirects to shortURL page.
+app.post("/urls/:shortURL", (req, res) => {
+  res.redirect(`/urls/${req.params.shortURL}`); 
+});
+
 // Saves URL submission and autogen short URL to urlDatabase.
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
