@@ -1,7 +1,7 @@
 {
   "name": "tinyapp",
   "version": "1.0.0",
-  "description": "TinyApp is a local URL shortener using Node and Express.",
+  "description": "TinyApp is a URL shortener using Node and Express.",
   "main": "express_server.js",
   "scripts": {
     "start": "./node_modules/.bin/nodemon -L express_server.js",
