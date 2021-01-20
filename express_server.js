@@ -38,7 +38,7 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  res.render("urls_new", templateVars);
 });
 
 // Passing URL info for specified short URL to EJS template.
@@ -56,7 +56,7 @@ app.post("/urls/:shortURL", (req, res) => {
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
-  res.redirect(`/urls/${shortURL}`); // Redirects to new shortURL page.
+  res.redirect(`/urls/${shortURL}`, templateVars); // Redirects to new shortURL page.
 });
 
 // Deletes a URL.
