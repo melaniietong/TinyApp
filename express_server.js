@@ -67,12 +67,12 @@ const generateRandomUserID = () => {
 
 // Passing urlDatabase to /url EJS template.
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, user: users };
+  const templateVars = { urls: urlDatabase, user: users[req.cookies['user_id']] };
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = { user: users };
+  const templateVars = { user: users[req.cookies['user_id']] };
   res.render("urls_new", templateVars);
 });
 
@@ -81,8 +81,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
-    user: users };
-
+    user: users[req.cookies['user_id']] };
   res.render("urls_show", templateVars);
 });
 
@@ -118,7 +117,7 @@ app.get("/u/:shortURL", (req, res) => {
 
 // Registration page.
 app.get("/register", (req, res) => {
-  const templateVars = { user: users };
+  const templateVars = { user: users[req.cookies['user_id']] };
   res.render("urls_registration", templateVars);
 });
 
@@ -134,7 +133,7 @@ app.post("/register", (req, res) => {
 
   // Create a new user in users database.
   users[newUserID] = {
-    id: "newUserID", 
+    id: newUserID, 
     email: req.body.email, 
     password: req.body.password
   }
