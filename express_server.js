@@ -144,7 +144,7 @@ app.post("/register", (req, res) => {
 
 // Logs out the user by clearing the cookie.
 app.post("/logout", (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect("/urls");
 });
 
