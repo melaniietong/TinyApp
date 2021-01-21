@@ -61,6 +61,15 @@ const generateRandomUserID = () => {
   return newUser += randomNum;
 };
 
+// Loops through the user database to find an email.
+const findEmailInDatabase = (emailQuery) => {
+  for (let user in users) {
+    if (user["email"] === emailQuery) return true;
+  }
+
+   return false;
+};
+
 /* -----------------------------------------------------------------
     CRUD ROUTING
 ----------------------------------------------------------------- */
@@ -129,6 +138,10 @@ app.post("/login", (req, res) => {
 
 // Registers a new account.
 app.post("/register", (req, res) => {
+  if (req.body.email === '' || req.body.password === '') {
+    res.status(404).send('Email and/or password cannot be empty.');
+
+  }
   const newUserID = generateRandomUserID();
 
   // Create a new user in users database.
