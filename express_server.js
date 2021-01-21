@@ -145,8 +145,13 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 // On short URL page, user can edit the URL and update it.
 app.post("/update/:id", (req, res) => {
-  urlDatabase[req.params.id]["longURL"] = req.body.longURL;
-  res.redirect(`/urls/${req.params.id}`);
+  if (req.cookies["user_id"] === urlDatabase[req.params.id]["userID"]) {
+    urlDatabase[req.params.id]["longURL"] = req.body.longURL;
+    res.redirect(`/urls/${req.params.id}`);
+  } else {
+    res.status(403).send('You do not have permission to edit this.');
+    return;
+  }
 });
 
 // Short URL goes to website.
