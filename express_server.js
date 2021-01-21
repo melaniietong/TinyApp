@@ -25,23 +25,36 @@ app.use(cookieParser());
 
 // Stores shorten URLs with their matching long URL.
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.example.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+  b6UTxQ: { longURL: "https://www.example.ca", userID: "userRandomID" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "userRandomID" }
 };
 
 // Holds user's emails and passwords.
-const users = { 
+const users = {
   "userRandomID": {
-    id: "userRandomID", 
-    email: "user@example.com", 
+    id: "userRandomID",
+    email: "user@example.com",
     password: "purple-monkey-dinosaur"
   },
- "user2RandomID": {
-    id: "user2RandomID", 
-    email: "user2@example.com", 
+  
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
     password: "dishwasher-funk"
   }
-}
+};
+
+// Filters URL database based on logged in user.
+const filterURLDatabase = (user) => {
+  const filteredDatabase = {};
+  for (let shortURL in urlDatabase) {
+    // If user owns the short URL, add the short URL to the filtered database.
+    if (urlDatabase[shortURL]["userID"] === user) {
+      filteredDatabase[shortURL] = urlDatabase[shortURL];
+    }
+  }
+  return filteredDatabase;
+};
 
 // Generates a random alphanumeric 6 character string.
 const generateRandomString = () => {
@@ -74,7 +87,9 @@ const getUserByEmail = (emailQuery) => {
 
 // Render: My URLs page.
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, user: users[req.cookies['user_id']] };
+  const templateVars = {
+    urls: filterURLDatabase(req.cookies['user_id']),
+    user: users[req.cookies['user_id']] };
   res.render("urls_index", templateVars);
 });
 
@@ -114,10 +129,10 @@ app.post("/urls", (req, res) => {
   urlDatabase[shortURL] = {
     longURL: req.body.longURL,
     userID: req.cookies['user_id']
-  }
+  };
 
   // Redirects to new shortURL page.
-  res.redirect(`/urls/${shortURL}`); 
+  res.redirect(`/urls/${shortURL}`);
 });
 
 // User presses delete button and short URL is deleted.
@@ -164,7 +179,7 @@ app.post("/login", (req, res) => {
   // Email is in the database.
   if (loggingInUser) {
     // Email and password match.
-    if (loggingInUser.password === req.body.password) { 
+    if (loggingInUser.password === req.body.password) {
       res.cookie("user_id", loggingInUser.id);
       res.redirect("/urls");
     } else { // ERROR: Incorrect password.
@@ -195,10 +210,10 @@ app.post("/register", (req, res) => {
 
   // Create a new user in users database.
   users[newUserID] = {
-    id: newUserID, 
-    email: req.body.email, 
+    id: newUserID,
+    email: req.body.email,
     password: req.body.password
-  }
+  };
 
   res.cookie("user_id", newUserID);
   res.redirect("/urls");
