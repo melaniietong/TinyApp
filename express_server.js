@@ -190,7 +190,7 @@ app.post("/login", (req, res) => {
   // Email is in the database.
   if (loggingInUser) {
     // Email and password match.
-    if (loggingInUser.password === req.body.password) {
+    if (bcrypt.compareSync(req.body.password, loggingInUser.password)) {
       res.cookie("user_id", loggingInUser.id);
       res.redirect("/urls");
     } else { // ERROR: Incorrect password.
@@ -219,11 +219,15 @@ app.post("/register", (req, res) => {
 
   const newUserID = generateRandomUserID();
 
+  // Hashing the password.
+  const password = req.body.password;
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
   // Create a new user in users database.
   users[newUserID] = {
     id: newUserID,
     email: req.body.email,
-    password: req.body.password
+    password: hashedPassword
   };
 
   res.cookie("user_id", newUserID);
