@@ -139,7 +139,7 @@ app.post("/urls", (req, res) => {
 
 // User presses delete button and short URL is deleted.
 app.post("/urls/:shortURL/delete", (req, res) => {
-  if (req.cookies["user_id"] !== undefined && req.cookies["user_id"] === urlDatabase[req.params.id]["userID"]) {
+  if (req.cookies["user_id"] !== undefined && req.cookies["user_id"] === urlDatabase[req.params.shortURL]["userID"]) {
     delete urlDatabase[req.params.shortURL];
     res.redirect("/urls");
   } else { // ERROR: Being accessed by non-owner.
