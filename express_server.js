@@ -136,21 +136,40 @@ app.get("/login", (req, res) => {
 
 // User login. Saves username to cookie.
 app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username);
-  res.redirect("/urls");
+  // ERROR: Email/password input is empty.
+  if (req.body.email === '' || req.body.password === '') {
+    res.status(404).send('Email and/or password cannot be empty.\nPlease try again.');
+    return;
+  }
+
+  const loggingInUser = getUserByEmail(req.body.email);
+
+  if (loggingInUser) {
+    // Email and password match.
+    if (loggingInUser.password === req.body.password) { 
+      res.cookie("user_id", loggingInUser.id);
+      res.redirect("/urls");
+    } else { // ERROR: Incorrect password.
+      res.status(403).send('Incorrect password.\nPlease try again.');
+      return;
+    }
+  } else { // ERROR: Email isn't in the user database.
+    res.status(403).send('Email is not associated with an account.\nPlease register for an account.');
+    return;
+  }
 });
 
 // Registers a new account.
 app.post("/register", (req, res) => {
   // ERROR: Email/password input is empty.
   if (req.body.email === '' || req.body.password === '') {
-    res.status(404).send('Email and/or password cannot be empty.');
+    res.status(404).send('Email and/or password cannot be empty.\nPlease try again.');
     return;
   }
 
   // ERROR: Email is already in use.
   if (getUserByEmail(req.body.email)) {
-    res.status(404).send('Email is already in use.');
+    res.status(404).send('Email is already in use.\nPlease use a different email or login.');
     return;
   }
 
