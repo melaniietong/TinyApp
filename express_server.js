@@ -72,23 +72,26 @@ const getUserByEmail = (emailQuery) => {
     CRUD ROUTING
 ----------------------------------------------------------------- */
 
-// Passing urlDatabase to /url EJS template.
+// Render: My URLs page.
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase, user: users[req.cookies['user_id']] };
   res.render("urls_index", templateVars);
 });
 
+// Render: New URL page.
 app.get("/urls/new", (req, res) => {
   const templateVars = { user: users[req.cookies['user_id']] };
   res.render("urls_new", templateVars);
 });
 
-// Passing URL info for specified short URL to EJS template.
+// Render: Short URL page.
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
-    user: users[req.cookies['user_id']] };
+    user: users[req.cookies['user_id']]
+  };
+
   res.render("urls_show", templateVars);
 });
 
@@ -97,44 +100,46 @@ app.post("/urls/:shortURL", (req, res) => {
   res.redirect(`/urls/${req.params.shortURL}`);
 });
 
-// Saves URL submission and autogen short URL to urlDatabase.
+// When user creates a new URL, assigns URL to a short URL and saves it in the database.
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
-  res.redirect(`/urls/${shortURL}`); // Redirects to new shortURL page.
+
+  // Redirects to new shortURL page.
+  res.redirect(`/urls/${shortURL}`); 
 });
 
-// Deletes a URL.
+// User presses delete button and short URL is deleted.
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 });
 
-// Edit a URL.
+// On short URL page, user can edit the URL and update it.
 app.post("/update/:id", (req, res) => {
   urlDatabase[req.params.id] = req.body.longURL;
   res.redirect(`/urls/${req.params.id}`);
 });
 
-// Redirects short URL to long URL.
+// Short URL goes to website.
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
 
-// Registration page.
+// Render: Registration page.
 app.get("/register", (req, res) => {
   const templateVars = { user: users[req.cookies['user_id']] };
   res.render("urls_registration", templateVars);
 });
 
-// Login page.
+// Render: Login page.
 app.get("/login", (req, res) => {
   const templateVars = { user: users[req.cookies['user_id']] };
   res.render("urls_login", templateVars);
 });
 
-// User login. Saves username to cookie.
+// On the Login page, user can login with their email and password.
 app.post("/login", (req, res) => {
   // ERROR: Email/password input is empty.
   if (req.body.email === '' || req.body.password === '') {
@@ -144,6 +149,7 @@ app.post("/login", (req, res) => {
 
   const loggingInUser = getUserByEmail(req.body.email);
 
+  // Email is in the database.
   if (loggingInUser) {
     // Email and password match.
     if (loggingInUser.password === req.body.password) { 
@@ -159,7 +165,7 @@ app.post("/login", (req, res) => {
   }
 });
 
-// Registers a new account.
+// On the Registration page, user can register a new account with email and password.
 app.post("/register", (req, res) => {
   // ERROR: Email/password input is empty.
   if (req.body.email === '' || req.body.password === '') {
@@ -186,7 +192,7 @@ app.post("/register", (req, res) => {
   res.redirect("/urls");
 });
 
-// Logs out the user by clearing the cookie.
+// When user clicks the logout button, their login is cleared from the cookie.
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id");
   res.redirect("/urls");
