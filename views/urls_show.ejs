@@ -20,7 +20,9 @@
         <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
       </div>
     <div class="card-footer text-muted">
-      <!-- Edit URL section -->
+      <!-- Logged in user + logout button -->
+      <% if (user !== undefined && user.id === owner) { %>
+        <!-- Edit URL section -->
       <div class="card-body">
         <h6 class="card-title">Edit URL</h6>
         <form class="form-inline" action="/update/<%= shortURL %>" method="POST">
@@ -31,6 +33,10 @@
           </div>
         </form>
       </div>
+      <% } else { %>
+        <div>This shortened URL belongs to: <strong><%= owner %></strong></div>
+        <div>If this URL belongs to you, you can login to edit this URL.</div>
+      <% } %>
     </div>
   </div>
 

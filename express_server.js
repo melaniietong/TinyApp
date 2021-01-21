@@ -109,8 +109,12 @@ app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL]["longURL"],
-    user: users[req.cookies['user_id']]
+    user: users[req.cookies['user_id']],
+    owner: urlDatabase[req.params.shortURL]["userID"]
   };
+
+  console.log(users)
+  console.log(templateVars)
 
   res.render("urls_show", templateVars);
 });
@@ -123,8 +127,6 @@ app.post("/urls/:shortURL", (req, res) => {
 // When user creates a new URL, assigns URL to a short URL and saves it in the database.
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
-
-  console.log(req.body.longURL);
 
   urlDatabase[shortURL] = {
     longURL: req.body.longURL,
