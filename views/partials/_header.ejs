@@ -16,7 +16,7 @@
 
     <!-- Login -->
     <div class="navbar-brand">
-      <!-- Established user + logout button -->
+      <!-- Logged in user + logout button -->
       <% if (user) { %>
         <div class ="login-container">
           <form class="form-inline" action="/logout" method="POST">
@@ -25,14 +25,10 @@
           </form>
         </div>
       <% } else { %>
-        <!-- New user login -->
-        <div class ="login-container">
-          <form class="form-inline" action="/login" method="POST">
-            <div class="form-group mb-2">
-              <input class="form-control" type="text" name="username" placeholder="username" style="width: 150px; margin: 1em">
-              <button type="submit" class="btn btn-light">Login</button>
-            </div>
-          </form>
+        <!-- Not logged in, offers login or register option -->
+        <div class ="login-container"> 
+          <a href="/login"><button class="btn btn-outline-light" style="margin-right: 10px;">Login</button></a>
+          <a href="/register"><button class="btn btn-light">Register</button></a>
         </div>
       <% } %>
     </div>
