@@ -112,10 +112,7 @@ app.get("/urls/:shortURL", (req, res) => {
     user: users[req.cookies['user_id']],
     owner: urlDatabase[req.params.shortURL]["userID"]
   };
-
-  console.log(users)
-  console.log(templateVars)
-
+  
   res.render("urls_show", templateVars);
 });
 
@@ -161,7 +158,6 @@ app.post("/update/:id", (req, res) => {
 
 // Short URL goes to website.
 app.get("/u/:shortURL", (req, res) => {
-  console.log(req.params.shortURL);
   const website = urlDatabase[req.params.shortURL]["longURL"];
   res.redirect(website);
 });
