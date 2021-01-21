@@ -80,8 +80,13 @@ app.get("/urls", (req, res) => {
 
 // Render: New URL page.
 app.get("/urls/new", (req, res) => {
-  const templateVars = { user: users[req.cookies['user_id']] };
-  res.render("urls_new", templateVars);
+  // If user is logged in, they can create a new URL.
+  if (req.cookies['user_id']) {
+    const templateVars = { user: users[req.cookies['user_id']] };
+    res.render("urls_new", templateVars);
+  } else { // If not redirects to login page.
+    res.redirect("/login");
+  }
 });
 
 // Render: Short URL page.
