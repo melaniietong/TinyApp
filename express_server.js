@@ -64,7 +64,7 @@ const generateRandomUserID = () => {
 // Loops through the user database to find an email.
 const findEmailInDatabase = (emailQuery) => {
   for (let user in users) {
-    if (user["email"] === emailQuery) return true;
+    if (users[user]["email"] === emailQuery) return true;
   }
 
    return false;
@@ -138,10 +138,18 @@ app.post("/login", (req, res) => {
 
 // Registers a new account.
 app.post("/register", (req, res) => {
+  // ERROR: Email/password input is empty.
   if (req.body.email === '' || req.body.password === '') {
     res.status(404).send('Email and/or password cannot be empty.');
-
+    return;
   }
+
+  // ERROR: Email is already in use.
+  if (findEmailInDatabase(req.body.email)) {
+    res.status(404).send('Email is already in use.');
+    return;
+  }
+
   const newUserID = generateRandomUserID();
 
   // Create a new user in users database.
