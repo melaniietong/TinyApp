@@ -19,6 +19,9 @@ app.set("view engine", "ejs");
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
+// Bcrypt -- hashes passwords.
+const bcrypt = require('bcrypt');
+
 /* -----------------------------------------------------------------
     GLOBALS
 ----------------------------------------------------------------- */
