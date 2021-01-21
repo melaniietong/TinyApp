@@ -61,13 +61,11 @@ const generateRandomUserID = () => {
   return newUser += randomNum;
 };
 
-// Loops through the user database to find an email.
-const findEmailInDatabase = (emailQuery) => {
+// Finds a user by a given email.
+const getUserByEmail = (emailQuery) => {
   for (let user in users) {
-    if (users[user]["email"] === emailQuery) return true;
+    if (users[user]["email"] === emailQuery) return users[user];
   }
-
-   return false;
 };
 
 /* -----------------------------------------------------------------
@@ -145,7 +143,7 @@ app.post("/register", (req, res) => {
   }
 
   // ERROR: Email is already in use.
-  if (findEmailInDatabase(req.body.email)) {
+  if (getUserByEmail(req.body.email)) {
     res.status(404).send('Email is already in use.');
     return;
   }
