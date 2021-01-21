@@ -139,16 +139,21 @@ app.post("/urls", (req, res) => {
 
 // User presses delete button and short URL is deleted.
 app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect("/urls");
+  if (req.cookies["user_id"] !== undefined && req.cookies["user_id"] === urlDatabase[req.params.id]["userID"]) {
+    delete urlDatabase[req.params.shortURL];
+    res.redirect("/urls");
+  } else { // ERROR: Being accessed by non-owner.
+    res.status(403).send('You do not have permission to edit this.');
+    return;
+  }
 });
 
 // On short URL page, user can edit the URL and update it.
 app.post("/update/:id", (req, res) => {
-  if (req.cookies["user_id"] === urlDatabase[req.params.id]["userID"]) {
+  if (req.cookies["user_id"] !== undefined && req.cookies["user_id"] === urlDatabase[req.params.id]["userID"]) {
     urlDatabase[req.params.id]["longURL"] = req.body.longURL;
     res.redirect(`/urls/${req.params.id}`);
-  } else {
+  } else { // ERROR: Being accessed by non-owner.
     res.status(403).send('You do not have permission to edit this.');
     return;
   }
