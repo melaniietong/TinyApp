@@ -31,7 +31,7 @@
         <% for(let shortURL in urls) { %>
           <tr>
             <td><%= shortURL %></td>
-            <td><%= urls[shortURL] %></td>
+            <td><%= urls[shortURL]["longURL"] %></td>
             <td><form method="POST" action="/urls/<%= shortURL %>">
               <button class="btn btn-outline-info" type="submit">Edit</button>
             </form></td>

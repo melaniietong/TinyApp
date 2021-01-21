@@ -25,8 +25,8 @@ app.use(cookieParser());
 
 // Stores shorten URLs with their matching long URL.
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: { longURL: "https://www.example.ca", userID: "aJ48lW" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
 
 // Holds user's emails and passwords.
@@ -93,7 +93,7 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL],
+    longURL: urlDatabase[req.params.shortURL]["longURL"],
     user: users[req.cookies['user_id']]
   };
 
@@ -108,7 +108,13 @@ app.post("/urls/:shortURL", (req, res) => {
 // When user creates a new URL, assigns URL to a short URL and saves it in the database.
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
+
+  console.log(req.body.longURL);
+
+  urlDatabase[shortURL] = {
+    longURL: req.body.longURL,
+    userID: req.cookies['user_id']
+  }
 
   // Redirects to new shortURL page.
   res.redirect(`/urls/${shortURL}`); 
@@ -122,14 +128,15 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 // On short URL page, user can edit the URL and update it.
 app.post("/update/:id", (req, res) => {
-  urlDatabase[req.params.id] = req.body.longURL;
+  urlDatabase[req.params.id]["longURL"] = req.body.longURL;
   res.redirect(`/urls/${req.params.id}`);
 });
 
 // Short URL goes to website.
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
-  res.redirect(longURL);
+  console.log(req.params.shortURL);
+  const website = urlDatabase[req.params.shortURL]["longURL"];
+  res.redirect(website);
 });
 
 // Render: Registration page.
