@@ -15,9 +15,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 const { render } = require("ejs");
 app.set("view engine", "ejs");
 
-// Cookie Parser -- reads cookies.
-const cookieParser = require("cookie-parser");
-app.use(cookieParser());
+// Cookie Session -- encrypts cookies.
+const cookiesession = require("cookie-session");
+app.use(cookiesession());
 
 // Bcrypt -- hashes passwords.
 const bcrypt = require('bcrypt');
