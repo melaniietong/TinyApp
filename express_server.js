@@ -28,23 +28,16 @@ const bcrypt = require('bcrypt');
 
 // Stores shorten URLs with their matching long URL.
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.example.ca", userID: "userRandomID" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "userRandomID" }
+  example: { longURL: "https://www.example.ca", userID: "userRandomID" },
 };
 
 // Holds user's emails and passwords.
 const users = {
-  "userRandomID": {
-    id: "userRandomID",
+  "user_example": {
+    id: "user_example",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password: "example" // This would be hashed.
   },
-  
-  "user2RandomID": {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk"
-  }
 };
 
 // Filters URL database based on logged in user.
