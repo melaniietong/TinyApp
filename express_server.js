@@ -15,9 +15,19 @@ app.use(bodyParser.urlencoded({extended: true}));
 const { render } = require("ejs");
 app.set("view engine", "ejs");
 
+// Cookie Parser -- reads cookies.
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
 // Cookie Session -- encrypts cookies.
-const cookiesession = require("cookie-session");
-app.use(cookiesession());
+const cookieSession = require("cookie-session");
+app.use(cookieSession({
+  name: 'session',
+  keys: ['secret'],
+
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
 
 // Bcrypt -- hashes passwords.
 const bcrypt = require('bcrypt');
@@ -84,16 +94,16 @@ const getUserByEmail = (emailQuery) => {
 // Render: My URLs page.
 app.get("/urls", (req, res) => {
   const templateVars = {
-    urls: filterURLDatabase(req.cookies['user_id']),
-    user: users[req.cookies['user_id']] };
+    urls: filterURLDatabase(req.session.user_id),
+    user: users[req.session.user_id] };
   res.render("urls_index", templateVars);
 });
 
 // Render: New URL page.
 app.get("/urls/new", (req, res) => {
   // If user is logged in, they can create a new URL.
-  if (req.cookies['user_id']) {
-    const templateVars = { user: users[req.cookies['user_id']] };
+  if (req.session.user_id) {
+    const templateVars = { user: users[req.session.user_id] };
     res.render("urls_new", templateVars);
   } else { // If not redirects to login page.
     res.redirect("/login");
@@ -105,7 +115,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL]["longURL"],
-    user: users[req.cookies['user_id']],
+    user: users[req.session.user_id],
     owner: urlDatabase[req.params.shortURL]["userID"]
   };
   
@@ -123,7 +133,7 @@ app.post("/urls", (req, res) => {
 
   urlDatabase[shortURL] = {
     longURL: req.body.longURL,
-    userID: req.cookies['user_id']
+    userID: req.session.user_id
   };
 
   // Redirects to new shortURL page.
@@ -132,7 +142,7 @@ app.post("/urls", (req, res) => {
 
 // User presses delete button and short URL is deleted.
 app.post("/urls/:shortURL/delete", (req, res) => {
-  if (req.cookies["user_id"] !== undefined && req.cookies["user_id"] === urlDatabase[req.params.shortURL]["userID"]) {
+  if (req.session.user_id !== undefined && req.session.user_id === urlDatabase[req.params.shortURL]["userID"]) {
     delete urlDatabase[req.params.shortURL];
     res.redirect("/urls");
   } else { // ERROR: Being accessed by non-owner.
@@ -143,7 +153,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 // On short URL page, user can edit the URL and update it.
 app.post("/update/:id", (req, res) => {
-  if (req.cookies["user_id"] !== undefined && req.cookies["user_id"] === urlDatabase[req.params.id]["userID"]) {
+  if (req.session.user_id !== undefined && req.session.user_id === urlDatabase[req.params.id]["userID"]) {
     urlDatabase[req.params.id]["longURL"] = req.body.longURL;
     res.redirect(`/urls/${req.params.id}`);
   } else { // ERROR: Being accessed by non-owner.
@@ -160,13 +170,13 @@ app.get("/u/:shortURL", (req, res) => {
 
 // Render: Registration page.
 app.get("/register", (req, res) => {
-  const templateVars = { user: users[req.cookies['user_id']] };
+  const templateVars = { user: users[req.session.user_id] };
   res.render("urls_registration", templateVars);
 });
 
 // Render: Login page.
 app.get("/login", (req, res) => {
-  const templateVars = { user: users[req.cookies['user_id']] };
+  const templateVars = { user: users[req.session.user_id] };
   res.render("urls_login", templateVars);
 });
 
@@ -184,7 +194,7 @@ app.post("/login", (req, res) => {
   if (loggingInUser) {
     // Email and password match.
     if (bcrypt.compareSync(req.body.password, loggingInUser.password)) {
-      res.cookie("user_id", loggingInUser.id);
+      req.session.user_id = loggingInUser.id;
       res.redirect("/urls");
     } else { // ERROR: Incorrect password.
       res.status(403).send('Incorrect password.\nPlease try again.');
@@ -223,13 +233,13 @@ app.post("/register", (req, res) => {
     password: hashedPassword
   };
 
-  res.cookie("user_id", newUserID);
+  req.session.user_id = newUserID;
   res.redirect("/urls");
 });
 
 // When user clicks the logout button, their login is cleared from the cookie.
 app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
+  res.clearCookie("session");
   res.redirect("/urls");
 });
 
