@@ -14,7 +14,7 @@ Made by [Melanie Tong](https://github.com/melaniietong) as part of a project at 
 > Users can save as many shortened URLs as they want.
 !["Screenshot of saved URLs page."](https://github.com/melaniietong/TinyApp/blob/main/docs/savedURLs.png?raw=true)
 
-> Users can edit and delete saved URLs.
+> Users can edit and delete saved URLs that they own.
 !["Screenshot of a saved URL page."](https://github.com/melaniietong/TinyApp/blob/main/docs/edits.png?raw=true)
 
 ## Dependencies
