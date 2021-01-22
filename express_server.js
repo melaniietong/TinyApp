@@ -51,12 +51,12 @@ const users = {
 };
 
 // Filters URL database based on logged in user.
-const filterURLDatabase = (user) => {
+const filterURLDatabase = (user, database) => {
   const filteredDatabase = {};
-  for (let shortURL in urlDatabase) {
+  for (let shortURL in database) {
     // If user owns the short URL, add the short URL to the filtered database.
-    if (urlDatabase[shortURL]["userID"] === user) {
-      filteredDatabase[shortURL] = urlDatabase[shortURL];
+    if (database[shortURL]["userID"] === user) {
+      filteredDatabase[shortURL] = database[shortURL];
     }
   }
   return filteredDatabase;
@@ -73,16 +73,15 @@ const generateRandomString = () => {
 };
 
 // Generates a random user ID.
-const generateRandomUserID = () => {
+const generateRandomUserID = randomString => {
   let newUser = 'user_';
-  let randomNum = generateRandomString();
 
-  return newUser += randomNum;
+  return newUser += randomString();
 };
 
 // Finds a user by a given email.
-const getUserByEmail = (emailQuery) => {
-  for (let user in users) {
+const getUserByEmail = (emailQuery, database) => {
+  for (let user in database) {
     if (users[user]["email"] === emailQuery) return users[user];
   }
 };
@@ -94,7 +93,7 @@ const getUserByEmail = (emailQuery) => {
 // Render: My URLs page.
 app.get("/urls", (req, res) => {
   const templateVars = {
-    urls: filterURLDatabase(req.session.user_id),
+    urls: filterURLDatabase(req.session.user_id, urlDatabase),
     user: users[req.session.user_id] };
   res.render("urls_index", templateVars);
 });
@@ -188,7 +187,7 @@ app.post("/login", (req, res) => {
     return;
   }
 
-  const loggingInUser = getUserByEmail(req.body.email);
+  const loggingInUser = getUserByEmail(req.body.email, users);
 
   // Email is in the database.
   if (loggingInUser) {
@@ -215,12 +214,12 @@ app.post("/register", (req, res) => {
   }
 
   // ERROR: Email is already in use.
-  if (getUserByEmail(req.body.email)) {
+  if (getUserByEmail(req.body.email, users)) {
     res.status(404).send('Email is already in use.\nPlease use a different email or login.');
     return;
   }
 
-  const newUserID = generateRandomUserID();
+  const newUserID = generateRandomUserID(generateRandomString);
 
   // Hashing the password.
   const password = req.body.password;
