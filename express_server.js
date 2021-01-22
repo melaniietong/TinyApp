@@ -112,7 +112,9 @@ app.get("/urls/new", (req, res) => {
 
 // Render: Short URL page.
 app.get("/urls/:shortURL", (req, res) => {
+  // If short URL exists or not.
   if (urlDatabase[req.params.shortURL] === undefined) {
+    // ERROR: "This page does not exist".
     const templateVars = {
       shortURL: undefined,
       longURL: "Error",
@@ -120,6 +122,7 @@ app.get("/urls/:shortURL", (req, res) => {
     };
     res.render("urls_show", templateVars);
   } else {
+    // Short URL exists; displays appropriate page info.
     const templateVars = {
       shortURL: req.params.shortURL,
       longURL: urlDatabase[req.params.shortURL]["longURL"],
@@ -130,9 +133,17 @@ app.get("/urls/:shortURL", (req, res) => {
   }
 });
 
-// Redirects to shortURL page.
-app.post("/urls/:shortURL", (req, res) => {
-  res.redirect(`/urls/${req.params.shortURL}`);
+// Short URL goes to website.
+app.get("/u/:shortURL", (req, res) => {
+  // If short URL exists or not.
+  if (urlDatabase[req.params.shortURL] === undefined) {
+    // ERROR: "This page does not exist".
+    res.redirect("/urls/:shortURL");
+  } else {
+    // Short URL exists; goes to assocaited website.
+    const website = urlDatabase[req.params.shortURL]["longURL"];
+    res.redirect(website);
+  }
 });
 
 // When user creates a new URL, assigns URL to a short URL and saves it in the database.
@@ -146,6 +157,11 @@ app.post("/urls", (req, res) => {
 
   // Redirects to new shortURL page.
   res.redirect(`/urls/${shortURL}`);
+});
+
+// Redirects to shortURL page.
+app.post("/urls/:shortURL", (req, res) => {
+  res.redirect(`/urls/${req.params.shortURL}`);
 });
 
 // User presses delete button and short URL is deleted.
@@ -170,22 +186,26 @@ app.post("/update/:id", (req, res) => {
   }
 });
 
-// Short URL goes to website.
-app.get("/u/:shortURL", (req, res) => {
-  const website = urlDatabase[req.params.shortURL]["longURL"];
-  res.redirect(website);
+// Render: Login page.
+app.get("/login", (req, res) => {
+  // If user is already logged in or not.
+  if (req.session.userID) {
+    res.redirect('/urls');
+  } else {
+    const templateVars = { user: users[req.session.userID] };
+    res.render("urls_login", templateVars);
+  }
 });
 
 // Render: Registration page.
 app.get("/register", (req, res) => {
-  const templateVars = { user: users[req.session.userID] };
-  res.render("urls_registration", templateVars);
-});
-
-// Render: Login page.
-app.get("/login", (req, res) => {
-  const templateVars = { user: users[req.session.userID] };
-  res.render("urls_login", templateVars);
+  // If user is already logged in or not.
+  if (req.session.userID) {
+    res.redirect('/urls');
+  } else {
+    const templateVars = { user: users[req.session.userID] };
+    res.render("urls_registration", templateVars);
+  }
 });
 
 // On the Login page, user can login with their email and password.
