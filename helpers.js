@@ -5,4 +5,4 @@ const getUserByEmail = (emailQuery, database) => {
   }
 };
 
-module.exports = getUserByEmail;
+module.exports = { getUserByEmail };

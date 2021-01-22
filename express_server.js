@@ -37,7 +37,7 @@ const bcrypt = require('bcrypt');
 ----------------------------------------------------------------- */
 
 // Finds a user by a given email.
-const getUserByEmail = require("./helpers");
+const { getUserByEmail } = require("./helpers");
 
 // Stores shorten URLs with their matching long URL.
 const urlDatabase = {
