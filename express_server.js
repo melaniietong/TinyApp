@@ -86,6 +86,11 @@ const generateRandomUserID = randomString => {
     CRUD ROUTING
 ----------------------------------------------------------------- */
 
+// Redirects to /urls.
+app.get("/", (req, res) => {
+  res.redirect("/urls");
+});
+
 // Render: My URLs page.
 app.get("/urls", (req, res) => {
   const templateVars = {
