@@ -14,28 +14,32 @@
 <body>
   <div class="card text-center">
     <div class="card-header"></div>
-    <% if (user !== undefined && user.id === owner) { %>
-      <!-- Shows corresponding short and long URLs -->
-      <div class="card-body" style="margin: 4em;">
-        <h5 class="card-title">TinyURL for: <strong><%= longURL %></strong></h5>
-        <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
-      </div>
-    <div class="card-footer text-muted">
-      <!-- Edit URL section -->
-      <div class="card-body">
-        <h6 class="card-title">Edit URL</h6>
-        <form class="form-inline" action="/update/<%= shortURL %>" method="POST">
-          <div class="form-group col-sm-10 offset-sm-2 text-center">
-            <label for="longURL">Change URL:</label>
-            <input class="form-control" type="text" name="longURL" placeholder="http://" style="width: 300px; margin: 1em">
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
-        </form>
-      </div>
-      <% } else { %>
-        <div class="card-body">This shortened URL belongs to: <strong><%= owner %></strong></div>
-        <div class="card-body">If this URL belongs to you, you can login to edit this URL.</div>
-      <% } %>
+    <% if (shortURL === undefined) { %>
+      <div class="card-body" style="margin: 4em;">This link does not exist.</div>
+    <% } else { %>
+      <% if (user !== undefined && user.id === owner) { %>
+        <!-- Shows corresponding short and long URLs -->
+        <div class="card-body" style="margin: 4em;">
+          <h5 class="card-title">TinyURL for: <strong><%= longURL %></strong></h5>
+          <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
+        </div>
+      <div class="card-footer text-muted">
+        <!-- Edit URL section -->
+        <div class="card-body">
+          <h6 class="card-title">Edit URL</h6>
+          <form class="form-inline" action="/update/<%= shortURL %>" method="POST">
+            <div class="form-group col-sm-10 offset-sm-2 text-center">
+              <label for="longURL">Change URL:</label>
+              <input class="form-control" type="text" name="longURL" placeholder="http://" style="width: 300px; margin: 1em">
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </form>
+        </div>
+        <% } else { %>
+          <div class="card-body">This shortened URL belongs to: <strong><%= owner %></strong></div>
+          <div class="card-body">If this URL belongs to you, you can login to edit this URL.</div>
+        <% } %>
+    <% } %>
     </div>
   </div>
 

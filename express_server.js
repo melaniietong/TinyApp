@@ -112,14 +112,22 @@ app.get("/urls/new", (req, res) => {
 
 // Render: Short URL page.
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = {
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL]["longURL"],
-    user: users[req.session.userID],
-    owner: urlDatabase[req.params.shortURL]["userID"]
-  };
-  
-  res.render("urls_show", templateVars);
+  if (urlDatabase[req.params.shortURL] === undefined) {
+    const templateVars = {
+      shortURL: undefined,
+      longURL: "Error",
+      user: users[req.session.userID]
+    };
+    res.render("urls_show", templateVars);
+  } else {
+    const templateVars = {
+      shortURL: req.params.shortURL,
+      longURL: urlDatabase[req.params.shortURL]["longURL"],
+      user: users[req.session.userID],
+      owner: urlDatabase[req.params.shortURL]["userID"]
+    };
+    res.render("urls_show", templateVars);
+  }
 });
 
 // Redirects to shortURL page.
