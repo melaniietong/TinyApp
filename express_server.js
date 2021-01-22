@@ -267,6 +267,7 @@ app.post("/register", (req, res) => {
 
 // When user clicks the logout button, their login is cleared from the cookie.
 app.post("/logout", (req, res) => {
+  res.clearCookie("session.sig");
   res.clearCookie("session");
   res.redirect("/urls");
 });
