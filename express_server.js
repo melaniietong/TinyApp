@@ -36,6 +36,9 @@ const bcrypt = require('bcrypt');
     GLOBALS
 ----------------------------------------------------------------- */
 
+// Finds a user by a given email.
+const getUserByEmail = require("./helpers");
+
 // Stores shorten URLs with their matching long URL.
 const urlDatabase = {
   example: { longURL: "https://www.example.ca", userID: "userRandomID" },
@@ -77,13 +80,6 @@ const generateRandomUserID = randomString => {
   let newUser = 'user_';
 
   return newUser += randomString();
-};
-
-// Finds a user by a given email.
-const getUserByEmail = (emailQuery, database) => {
-  for (let user in database) {
-    if (users[user]["email"] === emailQuery) return users[user];
-  }
 };
 
 /* -----------------------------------------------------------------
